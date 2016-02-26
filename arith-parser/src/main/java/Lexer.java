@@ -1,16 +1,9 @@
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
-/**
- * Created by arty on 09.02.16.
- */
 public class Lexer {
     private Reader reader;
     private StringBuilder builder;
-    private String lexeme;
 
     Lexer(Reader reader) {
         this.reader = reader;
@@ -24,25 +17,18 @@ public class Lexer {
             builder.setLength(0);
             switch (c) {
                 case '+' :
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.PLUS);
                 case '-' :
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.MINUS);
                 case '*' :
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.MULT);
                 case '/' :
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.DIV);
                 case '^':
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.POWER);
                 case '(':
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.OP_BRACKET);
                 case ')':
-                    System.out.println(Character.toString(c));
                     return new Lexeme(Character.toString(c), Lexeme.LexemeTypes.CL_BRACKET);
                 default:
 
@@ -58,10 +44,9 @@ public class Lexer {
                  }
                  else if (!Character.isSpaceChar(i)) {
                     if (builder.length() > 0) {
-                        lexeme = builder.toString();
+                        String lexeme = builder.toString();
                         builder.setLength(0);
                         builder.append((char) i);
-                        System.out.println(lexeme);
                         return new Lexeme(lexeme, Lexeme.LexemeTypes.NUM);
                     }
                     else {

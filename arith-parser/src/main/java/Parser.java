@@ -1,8 +1,5 @@
 import java.io.Reader;
 
-/**
- * Created by arty on 10.02.16.
- */
 public class Parser {
     private Lexer lexer;
     private Lexeme lexeme;
@@ -13,47 +10,43 @@ public class Parser {
     }
 
     public int parseExpr() {
-        int result;
-        result = parseTerm();
-        if (lexeme.type == Lexeme.LexemeTypes.PLUS) {
-            lexeme = lexer.getNextLexeme();
-            return result + parseExpr();
+        int result = parseTerm();
+        while (lexeme.type == Lexeme.LexemeTypes.PLUS || lexeme.type == Lexeme.LexemeTypes.MINUS) {
+            if (lexeme.type == Lexeme.LexemeTypes.PLUS) {
+                lexeme = lexer.getNextLexeme();
+                result += parseTerm();
+            }
+            if (lexeme.type == Lexeme.LexemeTypes.MINUS) {
+                lexeme = lexer.getNextLexeme();
+                result -= parseTerm();
+            }
         }
-        if (lexeme.type == Lexeme.LexemeTypes.MINUS) {
-            lexeme = lexer.getNextLexeme();
-            return result - parseExpr();
-        }
-        if (lexeme.type == Lexeme.LexemeTypes.CL_BRACKET) {
-            lexeme = lexer.getNextLexeme();
-            System.out.println("returns " + result);
-            return result;
-        }
-//        lexeme = lexer.getNextLexeme();
+        lexeme = lexer.getNextLexeme();
         return result;
     }
 
     public int parseTerm() {
         int result = parseFactor();
-        if (lexeme.type == Lexeme.LexemeTypes.MULT) {
-            lexeme = lexer.getNextLexeme();
-            System.out.println("mult " + result);
-            result *= parseTerm();
-            System.out.println("return " + result);
-            return result;
-        }
-        if (lexeme.type == Lexeme.LexemeTypes.DIV) {
-            lexeme = lexer.getNextLexeme();
-            return result / parseTerm();
+        while (lexeme.type == Lexeme.LexemeTypes.MULT || lexeme.type == Lexeme.LexemeTypes.DIV) {
+            if (lexeme.type == Lexeme.LexemeTypes.MULT) {
+                lexeme = lexer.getNextLexeme();
+                result *= parseFactor();
+            }
+            if (lexeme.type == Lexeme.LexemeTypes.DIV) {
+                lexeme = lexer.getNextLexeme();
+                result /= parseFactor();
+            }
         }
         return result;
     }
 
     public int parseFactor() {
         int result = parsePower();
-        if (lexeme.type != Lexeme.LexemeTypes.POWER)
-           return result;
-        lexeme = lexer.getNextLexeme();
-        return (int)Math.pow(result, parseFactor());
+        if (lexeme.type == Lexeme.LexemeTypes.POWER) {
+            lexeme = lexer.getNextLexeme();
+            result = (int) Math.pow(result, parseFactor());
+        }
+        return result;
     }
 
     public int parsePower() {
@@ -70,13 +63,11 @@ public class Parser {
             lexeme = lexer.getNextLexeme();
             return result;
         }
-        else if (lexeme.type == Lexeme.LexemeTypes.OP_BRACKET || lexeme.type == Lexeme.LexemeTypes.EOF) {
+        if (lexeme.type == Lexeme.LexemeTypes.OP_BRACKET) {
             lexeme = lexer.getNextLexeme();
             return parseExpr();
         }
-        else {
-            throw new IllegalArgumentException();
-        }
+        throw new IllegalArgumentException();
     }
 
 }
