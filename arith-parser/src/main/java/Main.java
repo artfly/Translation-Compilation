@@ -22,7 +22,7 @@ public class Main {
 //                } catch (IOException e) {
 //                }
 //        }
-        Reader reader = new StringReader("(14 - 2 ) / ((94 * 1) - (94 ^ 1 ^ -1 ^ 1  - 1 ^ (2 * 2)))");
+        Reader reader = new StringReader("garbage");
         System.out.println((new Parser(reader)).parseExpr());
     }
 }

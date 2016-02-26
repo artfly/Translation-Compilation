@@ -1,25 +1,29 @@
+import com.sun.deploy.util.StringUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
-/**
- * Created by arty on 10.02.16.
- */
 public class LexerTest {
-    private StringReader reader;
     @Test
     public void testLexer() {
-        List<String> lexemes = Arrays.asList("-", "+",  "*", "/", "^", "(", ")", "123");
-        String expr = String.join(" ", lexemes);
-        reader = new StringReader(expr);
+        final Map<String, Lexeme.LexemeTypes> lexemes = new HashMap<>();
+        lexemes.put("-", Lexeme.LexemeTypes.MINUS);
+        lexemes.put("+", Lexeme.LexemeTypes.PLUS);
+        lexemes.put("*", Lexeme.LexemeTypes.MULT);
+        lexemes.put("/", Lexeme.LexemeTypes.DIV);
+        lexemes.put("^", Lexeme.LexemeTypes.POWER);
+        lexemes.put("(", Lexeme.LexemeTypes.OP_BRACKET);
+        lexemes.put(")", Lexeme.LexemeTypes.CL_BRACKET);
+        lexemes.put("123", Lexeme.LexemeTypes.NUM);
+        StringReader reader = new StringReader(StringUtils.join(lexemes.keySet(), " "));
 
         Lexer lexer = new Lexer(reader);
-        for (String expected : lexemes) {
-            assertEquals(expected, lexer.getNextLexeme().lexeme);
+        Lexeme lexeme;
+        for (Map.Entry<String, Lexeme.LexemeTypes> entry : lexemes.entrySet()) {
+            lexeme = lexer.getNextLexeme();
+            assertEquals(entry.getKey(), lexeme.lexeme);
+            assertEquals(entry.getValue(), lexeme.type);
         }
         assertEquals(Lexeme.LexemeTypes.EOF, lexer.getNextLexeme().type);
     }
